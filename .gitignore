@@ -162,3 +162,5 @@ cython_debug/
 # ignore data files
 data/
 .DS_Store
+log_file.csv
+custom/images

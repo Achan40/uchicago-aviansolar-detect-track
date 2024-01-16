@@ -30,7 +30,7 @@ def create_gif(input_folder, output_gif):
 if __name__ == "__main__":
     video_name = "video-00030-2019_06_26_13_41_08/"
     root = "C:/Users/Aaron/Desktop/uchicago-aviansolar-detect-track/data/" + video_name
-    input_folder = root + video_name + video_name
+    input_folder = root + video_name
     tracks = get_folders_in_directory(input_folder)
 
     print(tracks)

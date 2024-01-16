@@ -7,10 +7,12 @@ from collections import Counter
 import copy
 from scipy.optimize import linear_sum_assignment
 
+import logging
+import csv
 
 class Track(object):
     def __init__(self, initLoc, trackIdCount):
-        self.track_id = trackIdCount
+        self.track_id = trackIdCount # 
         self.KF = cv2.KalmanFilter(4, 2)
         self.KF.measurementMatrix = np.array([[1,0,0,0], [0,1,0,0]],np.float32)
         self.KF.transitionMatrix = np.array([[1,0,1,0], [0,1,0,1], [0,0,1,0], [0,0,0,1]],np.float32)
@@ -22,8 +24,8 @@ class Track(object):
         self.boxes.append([initLoc[2], initLoc[3], initLoc[4], initLoc[5]])
         self.prediction = [initX, initY]
         self.vel_prediction = [0, 0]
-        self.skipped_frames = 0 
-        self.trace = [] 
+        self.skipped_frames = 0 #
+        self.trace = [] #
         self.trace.append([initX, initY])
         self.areas = []
         self.areas.append(initArea)
@@ -31,7 +33,7 @@ class Track(object):
         self.images = []
         self.croppedImages = []
         self.obj_type_predictions = []
-        self.firm_track_count = 0
+        self.firm_track_count = 0 #
         self.write_initial_frames = True
         self.prediction_history = []
         self.prediction_history.append([initX, initY])
@@ -46,7 +48,7 @@ class Track(object):
         self.trackerstarted = False
         self.trajectory_diffs = []
         self.trajectory_diffs.append(0)
-        self.empty_image_count = 0
+        self.empty_image_count = 0 #
 
 
 class Tracker(object):
@@ -672,6 +674,7 @@ class Tracker(object):
                         self.tracks[i].write_initial_frames = False
                         prev_frame_num = frame_num - len(self.tracks[i].images)
                         for k in range(len(self.tracks[i].images)):
+                            prev_frame_num += 1 # implement fix for prev frame number. Make sure `count` and `start_frame_number` in main_app_single_file.py are the same
                             px, py = self.tracks[i].trace[k]
                             parea = self.tracks[i].areas[k]
                             pux, puy, pbWidth, pbHeight = self.tracks[i].boxes[k]
@@ -679,14 +682,19 @@ class Tracker(object):
                             pvel_mag = np.sqrt(np.power(pspeed[0], 2) + np.power(pspeed[1], 2))
                             pvel_mag = self.tracks[i].distances[k]
                             # todo, figure out how to get frame_num of previous better
-                            # AC: Images written in this path always have wrong frame num
-                            self.writeImage(self.tracks[i].images[k], px, py, prev_frame_num, str(self.tracks[i].track_id) + 'WRONG', pvel_mag, parea, pux, puy, pbWidth, pbHeight)
-                            prev_frame_num += 1
+                            obj = self.tracks[i]
+                            logging.info(f"WRONG,{prev_frame_num},{len(self.tracks)},{len(self.trackers)},{obj.track_id},{obj.skipped_frames},{obj.firm_track_count},{obj.empty_image_count}")
+
+                            self.writeImage(self.tracks[i].images[k], px, py, prev_frame_num, str(self.tracks[i].track_id), pvel_mag, parea, pux, puy, pbWidth, pbHeight)
                     
                     ux, uy, bWidth, bHeight = self.tracks[i].boxes[-1]
                     speed = self.tracks[i].vel_prediction
                     vel_mag = np.sqrt(np.power(speed[0], 2) + np.power(speed[1], 2))
                     vel_mag = self.tracks[i].distances[-1]
+
+                    obj = self.tracks[i]
+                    logging.info(f"RIGHT_SOMETIMES,{frame_num},{len(self.tracks)},{len(self.trackers)},{obj.track_id},{obj.skipped_frames},{obj.firm_track_count},{obj.empty_image_count}")
+
                     # AC: Images in this path sometimes have wrong frame num. frame num ahead of what is should be SOMETIMES. Seems to depend on when video processing is started.
                     self.writeImage(cropped_frame, x, y, frame_num, self.tracks[i].track_id, vel_mag, objArea, ux, uy, bWidth, bHeight)
 
@@ -735,7 +743,7 @@ class Tracker(object):
 #                dist_stdev = statistics.stdev(self.tracks[i].distances)
 #                dist_var = statistics.variance(self.tracks[i].distances)
 #                print("distance mean: " + str(dist_mean) + ", stdev: " + str(dist_stdev) + ", var: " + str(dist_var))
-                
+        
         if len(del_tracks) > 0:  # only when skipped frame exceeds max
             for id in sorted(del_tracks, reverse=True):
                 if id < len(self.tracks):

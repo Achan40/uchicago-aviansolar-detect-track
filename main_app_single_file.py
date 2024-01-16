@@ -6,6 +6,9 @@ import argparse
 from obj_detector import ObjDetector
 from tracker import Tracker
 
+import logging
+import csv
+
 def find_objects(file, filename, outpath, showImages, writeImages, writeVideoFile, verbose):
     storeImages = True
     
@@ -35,9 +38,9 @@ def find_objects(file, filename, outpath, showImages, writeImages, writeVideoFil
             cv2.resizeWindow('contours', 1920, 1080)
 
     
-        count = 4022
+        count = 0
         # set this value if you want to start processing a video somewhere in the middle
-        start_frame_number = 4022
+        start_frame_number = 0
         cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame_number)
         while cap.isOpened():
             t1 = time.perf_counter()
@@ -46,9 +49,7 @@ def find_objects(file, filename, outpath, showImages, writeImages, writeVideoFil
             if ret == False:
                 break
     
-            # print("frame: " + str(count))
-            if count in [12, 1031, 1032, 1040, 2340, 2414, 4022, 5036, 5429, 6265]:
-                print('frame: ' + str(count))
+            print("frame: " + str(count))
 
             if showImages | writeVideoFile:
                 orig_frame = copy.copy(frame)
@@ -91,6 +92,25 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     full_path_video_file = args.video_file
+
+    log_file_path = "/Users/Aaron/Desktop/uchicago-aviansolar-detect-track/log_file.csv"
+
+    # Check if the log file exists
+    if os.path.exists(log_file_path):
+        # If it exists, delete the log file
+        os.remove(log_file_path)
+        print(f"The existing log file '{log_file_path}' has been deleted.")
+
+    # Configure logging to write logs to a CSV file
+    logging.basicConfig(filename=log_file_path, level=logging.INFO, format='%(message)s')
+    logging.info("path," +
+                 "frame_num," + 
+                 "len_tracks," + 
+                 "len_trackers," + 
+                 "trackid," + 
+                 "skipped_frames," + 
+                 "firm_track_count," +
+                 "empty_image_count," )
     
     if not os.path.exists(full_path_video_file):
         print("File does not exist: " + full_path_video_file)
