@@ -15,7 +15,6 @@ def find_objects(file, filename, outpath, showImages, writeImages, writeVideoFil
     print("Calling opencv VideoCapture with file: " + file)
     try:
         cap = cv2.VideoCapture(file)
-        
         width  = cap.get(3)   # float `width`
         height = cap.get(4)  # float `height`
     
