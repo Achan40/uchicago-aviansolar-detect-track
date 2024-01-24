@@ -91,8 +91,8 @@ class Tracker(object):
             if (len(cropped_frame) < 2):
                 print(cropped_frame)
         
-
-    def get100SizeCrop(self, frame, cenX, cenY):
+    # Change crop_size default param to adjust size of cropped image
+    def get100SizeCrop(self, frame, cenX, cenY, crop_size=400):
         height = frame.shape[0]
         width = frame.shape[1]
         expandNegX = 0
@@ -100,19 +100,19 @@ class Tracker(object):
         expandPosX = 0
         expandPosY = 0
 
-        uxpt = int(cenX - 100)
-        lxpt = int(uxpt + 200)
-        uypt = int(cenY - 100)
-        lypt = int(uypt + 200)
+        uxpt = int(cenX - crop_size/2)
+        lxpt = int(uxpt + crop_size)
+        uypt = int(cenY - crop_size/2)
+        lypt = int(uypt + crop_size)
 
         if uxpt < 0:
             expandNegX = 0 - uxpt
             uxpt = 0
         if uxpt > width:
-            return np.zeros([200, 200, 3], dtype=np.uint8)
+            return np.zeros([crop_size, crop_size, 3], dtype=np.uint8)
 
         if lxpt < 0:
-            return np.zeros([200, 200, 3], dtype=np.uint8)
+            return np.zeros([crop_size, crop_size, 3], dtype=np.uint8)
         if lxpt > width:
             expandPosX = lxpt - width
             lxpt = width
@@ -121,10 +121,10 @@ class Tracker(object):
             expandNegY = 0 - uypt
             uypt = 0
         if uypt > height: 
-            return np.zeros([200, 200, 3], dtype=np.uint8)
+            return np.zeros([crop_size, crop_size, 3], dtype=np.uint8)
 
         if lypt < 0: 
-            return np.zeros([200, 200, 3], dtype=np.uint8)
+            return np.zeros([crop_size, crop_size, 3], dtype=np.uint8)
         if lypt > height:
             expandPosY = lypt - height
             lypt = height
@@ -132,7 +132,7 @@ class Tracker(object):
         cropped_frame = frame[uypt:lypt, uxpt:lxpt]
         if (expandNegX > 0) | (expandNegY > 0) | (expandPosX > 0) | (expandPosY > 0):
             cropped_frame = cv2.copyMakeBorder(cropped_frame, top=expandNegY, bottom=expandPosY, left=expandNegX, right=expandPosX, borderType=cv2.BORDER_CONSTANT, value=[0, 0, 0])
-        if (cropped_frame.shape[0] < 200) | (cropped_frame.shape[1] < 200):
+        if (cropped_frame.shape[0] < crop_size) | (cropped_frame.shape[1] < crop_size):
             raise ValueError("Crop error")
         return cropped_frame
 
