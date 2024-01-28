@@ -674,7 +674,7 @@ class Tracker(object):
                         self.tracks[i].write_initial_frames = False
                         prev_frame_num = frame_num - len(self.tracks[i].images)
                         for k in range(len(self.tracks[i].images)):
-                            prev_frame_num += 1 # implement fix for prev frame number. Make sure `count` and `start_frame_number` in main_app_single_file.py are the same
+                            # prev_frame_num += 1 # implement fix for prev frame number. Make sure `count` and `start_frame_number` in main_app_single_file.py are the same
                             px, py = self.tracks[i].trace[k]
                             parea = self.tracks[i].areas[k]
                             pux, puy, pbWidth, pbHeight = self.tracks[i].boxes[k]

@@ -164,3 +164,4 @@ data/
 .DS_Store
 log_file.csv
 custom/images
+custom/labels
