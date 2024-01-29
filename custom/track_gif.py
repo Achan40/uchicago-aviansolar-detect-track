@@ -28,8 +28,8 @@ def create_gif(input_folder, output_gif):
     imageio.mimsave(output_gif, images, duration=.5)  # Adjust the duration as needed
 
 if __name__ == "__main__":
-    video_name = "video-00030-2019_06_26_13_41_08/"
-    root = "C:/Users/Aaron/Desktop/uchicago-aviansolar-detect-track/data/" + video_name
+    video_name = "video-00007-2019_06_26_13_41_08/"
+    root = "C:/Users/Aaron/Desktop/uchicago-aviansolar-detect-track/data/400x400/" + video_name
     input_folder = root + video_name
     tracks = get_folders_in_directory(input_folder)
 
