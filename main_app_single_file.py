@@ -91,25 +91,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     full_path_video_file = args.video_file
-
-    log_file_path = "/Users/Aaron/Desktop/uchicago-aviansolar-detect-track/log_file.csv"
-
-    # Check if the log file exists
-    if os.path.exists(log_file_path):
-        # If it exists, delete the log file
-        os.remove(log_file_path)
-        print(f"The existing log file '{log_file_path}' has been deleted.")
-
-    # Configure logging to write logs to a CSV file
-    logging.basicConfig(filename=log_file_path, level=logging.INFO, format='%(message)s')
-    logging.info("path," +
-                 "frame_num," + 
-                 "len_tracks," + 
-                 "len_trackers," + 
-                 "trackid," + 
-                 "skipped_frames," + 
-                 "firm_track_count," +
-                 "empty_image_count," )
     
     if not os.path.exists(full_path_video_file):
         print("File does not exist: " + full_path_video_file)

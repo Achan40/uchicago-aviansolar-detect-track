@@ -682,18 +682,13 @@ class Tracker(object):
                             pvel_mag = np.sqrt(np.power(pspeed[0], 2) + np.power(pspeed[1], 2))
                             pvel_mag = self.tracks[i].distances[k]
                             # todo, figure out how to get frame_num of previous better
-                            obj = self.tracks[i]
-                            logging.info(f"WRONG,{prev_frame_num},{len(self.tracks)},{len(self.trackers)},{obj.track_id},{obj.skipped_frames},{obj.firm_track_count},{obj.empty_image_count}")
-
                             self.writeImage(self.tracks[i].images[k], px, py, prev_frame_num, str(self.tracks[i].track_id), pvel_mag, parea, pux, puy, pbWidth, pbHeight)
-                    
+                            prev_frame_num += 1
+
                     ux, uy, bWidth, bHeight = self.tracks[i].boxes[-1]
                     speed = self.tracks[i].vel_prediction
                     vel_mag = np.sqrt(np.power(speed[0], 2) + np.power(speed[1], 2))
                     vel_mag = self.tracks[i].distances[-1]
-
-                    obj = self.tracks[i]
-                    logging.info(f"RIGHT_SOMETIMES,{frame_num},{len(self.tracks)},{len(self.trackers)},{obj.track_id},{obj.skipped_frames},{obj.firm_track_count},{obj.empty_image_count}")
 
                     # AC: Images in this path sometimes have wrong frame num. frame num ahead of what is should be SOMETIMES. Seems to depend on when video processing is started.
                     self.writeImage(cropped_frame, x, y, frame_num, self.tracks[i].track_id, vel_mag, objArea, ux, uy, bWidth, bHeight)
