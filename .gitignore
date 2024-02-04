@@ -165,3 +165,9 @@ data/
 log_file.csv
 custom/images
 custom/labels
+custom/full_set
+custom/train
+custom/val
+custom/final
+custom/final_v2
+custom/full_set_v2
